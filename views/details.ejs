@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Details</title>
+    <link rel="icon" type="image/png" href="/www.png">
+    <link rel="stylesheet" type="text/css" href="/style.css">
+</head>
+<body>
+    <div class="home-icon-container">
+        <a href="/">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="home-icon">
+                <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+            </svg>
+        </a>
+    </div>
+    <div class="container <%= factDetails && factDetails.length > 0 ? 'expanded' : '' %>">
+        <h1><%= searchType %> Details</h1>
+        <% if (result) { %>
+            <div class="details-card">
+                <ul>
+                    <% for (let key in result) { %>
+                        <li><strong><%= key.replace(/_/g, ' ') %>:</strong> <%= result[key] %></li>
+                    <% } %>
+                </ul>
+            </div>
+
+            <form id="details-form" action="/getFactDetails" method="POST" style="margin-top: 20px;">
+                <input type="hidden" name="searchType" value="<%= searchType %>">
+                <input type="hidden" name="pkValue" value="<%= pkValue %>">
+                <button type="submit">Show Details</button>
+            </form>
+            <div class="loader" id="loader"></div>
+
+            <% if (factDetails && factDetails.length > 0) { %>
+                <h2 style="margin-top: 30px; color: #6a11cb;">Related Fact Details</h2>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Policy Number</th>
+                                <th>Claim Number</th>
+                                <th>Valuation Code</th>
+                                <th>Posting_Date</th>
+                                <th>Base_Amount</th>
+                                <th>Contract_Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% factDetails.forEach(function(fact) { %>
+                                <tr>
+                                    <td><%= fact.Policy_Number %></td>
+                                    <td><%= fact.Claim_Number %></td>
+                                    <td><%= fact.Valuation_Code %></td>
+                                    <td><%= fact.Posting_Date %></td>
+                                    <td><%= fact.Base_Amount %></td>
+                                    <td><%= fact.Contract_Amount %></td>
+                                </tr>
+                            <% }); %>
+                        </tbody>
+                    </table>
+                </div>
+
+                <% if (totalPages > 1) { %>
+                    <div class="pagination">
+                        <% if (currentPage > 1) { %>
+                            <form id="prev-form" action="/getFactDetails" method="POST" style="display: inline;">
+                                <input type="hidden" name="searchType" value="<%= searchType %>">
+                                <input type="hidden" name="pkValue" value="<%= pkValue %>">
+                                <input type="hidden" name="page" value="<%= currentPage - 1 %>">
+                                <button type="submit">Previous</button>
+                            </form>
+                        <% } %>
+
+                        <span style="margin: 0 10px;">Page <%= currentPage %> of <%= totalPages %></span>
+
+                        <% if (currentPage < totalPages) { %>
+                            <form id="next-form" action="/getFactDetails" method="POST" style="display: inline;">
+                                <input type="hidden" name="searchType" value="<%= searchType %>">
+                                <input type="hidden" name="pkValue" value="<%= pkValue %>">
+                                <input type="hidden" name="page" value="<%= parseInt(currentPage) + 1 %>">
+                                <button type="submit">Next</button>
+                            </form>
+                        <% } %>
+                        <div class="small-loader" id="pagination-loader"></div>
+                    </div>
+                <% } %>
+            <% } else if (factDetails && factDetails.length === 0) { %>
+                <p class="error" style="margin-top: 20px;">No related fact details found.</p>
+            <% } %>
+        <% } else { %>
+            <p class="error">No details found.</p>
+        <% } %>
+        <a href="/" class="home-button">Home</a>
+    </div>
+    <script>
+        document.getElementById('details-form').addEventListener('submit', function() {
+            document.getElementById('loader').style.display = 'block';
+        });
+
+        const prevForm = document.getElementById('prev-form');
+        if (prevForm) {
+            prevForm.addEventListener('submit', function() {
+                document.getElementById('pagination-loader').style.display = 'inline-block';
+            });
+        }
+
+        const nextForm = document.getElementById('next-form');
+        if (nextForm) {
+            nextForm.addEventListener('submit', function() {
+                document.getElementById('pagination-loader').style.display = 'inline-block';
+            });
+        }
+    </script>
+</body>
+</html>

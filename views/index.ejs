@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search</title>
+    <link rel="icon" type="image/png" href="/www.png">
+    <link rel="stylesheet" type="text/css" href="/style.css">
+</head>
+<body>
+    <div class="home-icon-container">
+        <a href="/">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="home-icon">
+                <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+            </svg>
+        </a>
+    </div>
+    <div class="container">
+        <h1>Insurance Search</h1>
+        <form action="/search" method="POST">
+            <div>
+                <label for="searchType">Search for:</label>
+                <select name="searchType" id="searchType">
+                    <option value="policy">Policy</option>
+                    <option value="claim">Claim</option>
+                    <option value="state">State</option>
+                </select>
+            </div>
+            <div>
+                <label for="searchNumber">Number:</label>
+                <input type="text" name="searchNumber" id="searchNumber" placeholder="Enter policy, claim, or state number" required>
+            </div>
+            <button type="submit">Search</button>
+        </form>
+        <% if (error) { %>
+            <p class="error"><%= error %></p>
+        <% } %>
+        <a href="/" class="home-button">Home</a>
+    </div>
+</body>
+</html>
